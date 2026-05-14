@@ -428,15 +428,120 @@ Substitua o conteúdo do seu `index.html` por ESTE código completo.
       });
 
       salvar();
-      render();
+     function render(){
 
-      document.getElementById('nome').value = '';
-      document.getElementById('telefone').value = '';
-      document.getElementById('valor').value = '';
-      document.getElementById('obs').value = '';
+  document.getElementById('clientesTotal').innerText =
+    clientes.length;
 
-    }
+  document.getElementById('clientesTeste').innerText =
+    clientes.filter(c => c.status === 'Testando').length;
 
+  let faturamento =
+    clientes.reduce((acc,c)=>
+      acc + Number(c.valor || 0),0);
+
+  let custo =
+    clientes.reduce((acc,c)=>
+      acc + Number(c.custo || 0),0);
+
+  let despesa =
+    gastos.reduce((acc,g)=>
+      acc + Number(g.valor || 0),0);
+
+  let lucro =
+    faturamento - custo - despesa;
+
+  document.getElementById('faturamento').innerText =
+    moeda(faturamento);
+
+  document.getElementById('lucro').innerText =
+    moeda(lucro);
+
+  // =========================
+  // CONTROLE DE CRÉDITOS
+  // =========================
+
+  let totalGastoCreditos =
+    gastos.reduce((acc,g)=>
+      acc + Number(g.valor || 0),0);
+
+  let creditosComprados =
+    Math.floor(totalGastoCreditos / 8);
+
+  let creditosConsumidos =
+    clientes.filter(c =>
+      c.status === 'Ativo' ||
+      c.status === 'Vencido' ||
+      c.status === 'Cancelado'
+    ).length;
+
+  let estoqueDisponivel =
+    creditosComprados - creditosConsumidos;
+
+  // cria cards automaticamente
+  if(!document.getElementById('creditosComprados')){
+
+    document.querySelector('.cards').innerHTML += `
+      <div class="card">
+        <span>Créditos Comprados</span>
+        <h2 class="cyan" id="creditosComprados">0</h2>
+      </div>
+
+      <div class="card">
+        <span>Estoque Disponível</span>
+        <h2 id="estoqueDisponivel">0</h2>
+      </div>
+    `;
+  }
+
+  document.getElementById('creditosComprados').innerText =
+    creditosComprados;
+
+  document.getElementById('estoqueDisponivel').innerText =
+    estoqueDisponivel;
+
+  // =========================
+
+  document.getElementById('clientesTabela').innerHTML =
+    clientes.map(cliente => {
+
+      let classe =
+        cliente.status === 'Ativo'
+          ? 'ativo'
+          : cliente.status === 'Cancelado'
+          ? 'cancelado'
+          : 'testando';
+
+      return `
+        <tr>
+          <td>${cliente.nome}</td>
+
+          <td>${cliente.telefone}</td>
+
+          <td>
+            <span class="tag ${classe}">
+              ${cliente.status}
+            </span>
+          </td>
+
+          <td>
+            ${moeda(Number(cliente.valor || 0))}
+          </td>
+
+          <td class="green">
+            ${moeda(
+              Number(cliente.valor || 0)
+              - Number(cliente.custo || 0)
+            )}
+          </td>
+
+          <td>${cliente.obs}</td>
+        </tr>
+      `;
+
+    }).join('');
+
+}
     function addGasto(){
 
       gastos.unshift({
