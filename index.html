@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlayHub Control</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #000; color: #fff; padding: 20px; }
+    h1 { color: #00e5ff; font-size: 38px; margin-bottom: 5px; }
+    .sub { color: #aaa; margin-bottom: 25px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+    .card, .box { background: #0b0b0b; border: 1px solid rgba(0,229,255,.25); border-radius: 20px; padding: 18px; }
+    .card span { color: #999; font-size: 14px; }
+    .card strong { display: block; font-size: 28px; margin-top: 8px; }
+    .cyan { color: #00e5ff; } .green { color: #00ff88; } .red { color: #ff4d4d; }
+    input, select, textarea, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 12px; border: 1px solid #333; background: #181818; color: white; }
+    button { background: #00e5ff; color: #000; font-weight: 800; cursor: pointer; border: none; }
+    .row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 900px; }
+    th, td { border-bottom: 1px solid #222; padding: 12px; text-align: left; vertical-align: top; }
+    th { color: #00e5ff; }
+    .table-wrap { overflow-x: auto; }
+    .small-btn { background: #ff4d4d; color: white; padding: 8px 10px; font-size: 12px; }
+    @media (max-width: 800px) { .grid, .row { grid-template-columns: 1fr; } h1 { font-size: 30px; } }
+  </style>
+</head>
+<body>
+  <h1>PLAYHUB CONTROL</h1>
+  <div class="sub">Controle de clientes, testes, ativos, gastos, faturamento e lucro.</div>
+
+  <div class="grid">
+    <div class="card"><span>Clientes</span><strong id="totalClientes">0</strong></div>
+    <div class="card"><span>Ativos</span><strong id="ativos" class="cyan">0</strong></div>
+    <div class="card"><span>Faturado</span><strong id="faturado" class="green">R$ 0,00</strong></div>
+    <div class="card"><span>Lucro</span><strong id="lucro" class="green">R$ 0,00</strong></div>
+  </div>
+
+  <div class="box">
+    <h2>Filtros</h2>
+    <div class="row">
+      <input type="date" id="dataInicio">
+      <input type="date" id="dataFim">
+      <select id="filtroStatus">
+        <option>Todos</option>
+        <option>Testando</option>
+        <option>Ativo</option>
+        <option>Vencido</option>
+        <option>Cancelado</option>
+        <option>Aguardando Pagamento</option>
+      </select>
+      <select id="filtroOrigem">
+        <option>Todos</option>
+        <option>Instagram</option>
+        <option>WhatsApp</option>
+        <option>Grupo</option>
+        <option>Indicação</option>
+        <option>Influenciador</option>
+        <option>Condomínio</option>
+        <option>Outro</option>
+      </select>
+    </div>
+    <button onclick="render()">Aplicar filtros</button>
+  </div>
+
+  <br>
+
+  <div class="row">
+    <div class="box">
+      <h2>Novo Cliente / Lead</h2>
+      <input id="nome" placeholder="Nome do cliente">
+      <input id="telefone" placeholder="Telefone">
+      <select id="origem">
+        <option>Instagram</option><option>WhatsApp</option><option>Grupo</option><option>Indicação</option><option>Influenciador</option><option>Condomínio</option><option>Outro</option>
+      </select>
+      <select id="status">
+        <option>Testando</option><option>Ativo</option><option>Vencido</option><option>Cancelado</option><option>Aguardando Pagamento</option>
+      </select>
+      <input id="valor" type="number" step="0.01" placeholder="Valor recebido. Ex: 34.90">
+      <input id="custo" type="number" step="0.01" value="8" placeholder="Custo. Ex: 8">
+      <input id="data" type="date">
+      <textarea id="obs" placeholder="Observação"></textarea>
+      <button onclick="addCliente()">Salvar cliente</button>
+    </div>
+
+    <div class="box">
+      <h2>Novo Gasto</h2>
+      <input id="descGasto" placeholder="Descrição do gasto">
+      <input id="catGasto" placeholder="Categoria. Ex: Marketing">
+      <input id="valorGasto" type="number" step="0.01" placeholder="Valor">
+      <input id="dataGasto" type="date">
+      <button onclick="addGasto()">Salvar gasto</button>
+      <h3>Gastos filtrados</h3>
+      <div id="listaGastos"></div>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="box table-wrap">
+    <h2>Acompanhamento de clientes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente</th><th>Telefone</th><th>Origem</th><th>Status</th><th>Valor</th><th>Custo</th><th>Lucro</th><th>Data</th><th>Observação</th><th>Ação</th>
+        </tr>
+      </thead>
+      <tbody id="clientesTabela"></tbody>
+    </table>
+  </div>
+
+<script>
+  let clientes = JSON.parse(localStorage.getItem("playhub_clientes") || "[]");
+  let gastos = JSON.parse(localStorage.getItem("playhub_gastos") || "[]");
+
+  document.getElementById("data").value = new Date().toISOString().slice(0,10);
+  document.getElementById("dataGasto").value = new Date().toISOString().slice(0,10);
+
+  function moeda(v) {
+    return Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+
+  function salvar() {
+    localStorage.setItem("playhub_clientes", JSON.stringify(clientes));
+    localStorage.setItem("playhub_gastos", JSON.stringify(gastos));
+  }
+
+  function filtrados() {
+    const ini = document.getElementById("dataInicio").value;
+    const fim = document.getElementById("dataFim").value;
+    const st = document.getElementById("filtroStatus").value;
+    const or = document.getElementById("filtroOrigem").value;
+
+    const cf = clientes.filter(c =>
+      (!ini || c.data >= ini) &&
+      (!fim || c.data <= fim) &&
+      (st === "Todos" || c.status === st) &&
+      (or === "Todos" || c.origem === or)
+    );
+
+    const gf = gastos.filter(g =>
+      (!ini || g.data >= ini) &&
+      (!fim || g.data <= fim)
+    );
+
+    return { cf, gf };
+  }
+
+  function render() {
+    const { cf, gf } = filtrados();
+    const faturado = cf.reduce((s,c) => s + Number(c.valor || 0), 0);
+    const custoClientes = cf.reduce((s,c) => s + Number(c.custo || 0), 0);
+    const totalGastos = gf.reduce((s,g) => s + Number(g.valor || 0), 0);
+    const lucro = faturado - custoClientes - totalGastos;
+
+    document.getElementById("totalClientes").innerText = cf.length;
+    document.getElementById("ativos").innerText = cf.filter(c => c.status === "Ativo").length;
+    document.getElementById("faturado").innerText = moeda(faturado);
+    document.getElementById("lucro").innerText = moeda(lucro);
+    document.getElementById("lucro").className = lucro >= 0 ? "green" : "red";
+
+    document.getElementById("clientesTabela").innerHTML = cf.map(c => `
+      <tr>
+        <td>${c.nome}</td>
+        <td>${c.telefone || "-"}</td>
+        <td>${c.origem}</td>
+        <td>${c.status}</td>
+        <td>${moeda(c.valor)}</td>
+        <td>${moeda(c.custo)}</td>
+        <td class="${Number(c.valor)-Number(c.custo) >= 0 ? 'green' : 'red'}">${moeda(Number(c.valor)-Number(c.custo))}</td>
+        <td>${c.data}</td>
+        <td>${c.obs || ""}</td>
+        <td><button class="small-btn" onclick="delCliente(${c.id})">Excluir</button></td>
+      </tr>
+    `).join("");
+
+    document.getElementById("listaGastos").innerHTML = gf.map(g => `
+      <div style="background:#181818;padding:12px;border-radius:12px;margin-top:10px;">
+        ${g.data} - ${g.desc}<br><span class="red">${moeda(g.valor)}</span>
+        <button class="small-btn" onclick="delGasto(${g.id})">Excluir</button>
+      </div>
+    `).join("");
+  }
+
+  function addCliente() {
+    const nome = document.getElementById("nome").value.trim();
+    if (!nome) return alert("Digite o nome do cliente");
+
+    clientes.unshift({
+      id: Date.now(),
+      nome,
+      telefone: document.getElementById("telefone").value,
+      origem: document.getElementById("origem").value,
+      status: document.getElementById("status").value,
+      valor: Number(document.getElementById("valor").value || 0),
+      custo: Number(document.getElementById("custo").value || 0),
+      data: document.getElementById("data").value,
+      obs: document.getElementById("obs").value
+    });
+
+    salvar();
+    document.getElementById("nome").value = "";
+    document.getElementById("telefone").value = "";
+    document.getElementById("valor").value = "";
+    document.getElementById("obs").value = "";
+    render();
+  }
+
+  function addGasto() {
+    const desc = document.getElementById("descGasto").value.trim();
+    if (!desc) return alert("Digite a descrição do gasto");
+
+    gastos.unshift({
+      id: Date.now(),
+      desc,
+      cat: document.getElementById("catGasto").value,
+      valor: Number(document.getElementById("valorGasto").value || 0),
+      data: document.getElementById("dataGasto").value
+    });
+
+    salvar();
+    document.getElementById("descGasto").value = "";
+    document.getElementById("catGasto").value = "";
+    document.getElementById("valorGasto").value = "";
+    render();
+  }
+
+  function delCliente(id) {
+    clientes = clientes.filter(c => c.id !== id);
+    salvar();
+    render();
+  }
+
+  function delGasto(id) {
+    gastos = gastos.filter(g => g.id !== id);
+    salvar();
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>
