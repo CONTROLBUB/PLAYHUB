@@ -216,4 +216,4 @@ function Card({ label, value, cyan, red, green }) {
       <h2 className={`text-2xl md:text-3xl font-black mt-2 ${cyan ? "text-cyan-400" : red ? "text-red-400" : green ? "text-green-400" : "text-white"}`}>{value}</h2>
     </div>
   );
-}
+} 
