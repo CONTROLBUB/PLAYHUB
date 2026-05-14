@@ -1,243 +1,480 @@
+# PLAYHUB DASHBOARD MODERNO
+
+Substitua o conteúdo do seu `index.html` por ESTE código completo.
+
+```html
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PlayHub Control</title>
+
   <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, sans-serif; background: #000; color: #fff; padding: 20px; }
-    h1 { color: #00e5ff; font-size: 38px; margin-bottom: 5px; }
-    .sub { color: #aaa; margin-bottom: 25px; }
-    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
-    .card, .box { background: #0b0b0b; border: 1px solid rgba(0,229,255,.25); border-radius: 20px; padding: 18px; }
-    .card span { color: #999; font-size: 14px; }
-    .card strong { display: block; font-size: 28px; margin-top: 8px; }
-    .cyan { color: #00e5ff; } .green { color: #00ff88; } .red { color: #ff4d4d; }
-    input, select, textarea, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 12px; border: 1px solid #333; background: #181818; color: white; }
-    button { background: #00e5ff; color: #000; font-weight: 800; cursor: pointer; border: none; }
-    .row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 900px; }
-    th, td { border-bottom: 1px solid #222; padding: 12px; text-align: left; vertical-align: top; }
-    th { color: #00e5ff; }
-    .table-wrap { overflow-x: auto; }
-    .small-btn { background: #ff4d4d; color: white; padding: 8px 10px; font-size: 12px; }
-    @media (max-width: 800px) { .grid, .row { grid-template-columns: 1fr; } h1 { font-size: 30px; } }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #050505;
+      color: white;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #0b0b0b;
+      border-right: 1px solid rgba(0,255,255,.1);
+      padding: 25px;
+      position: fixed;
+      height: 100vh;
+    }
+
+    .logo {
+      width: 100%;
+      border-radius: 20px;
+      margin-bottom: 35px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .menu button {
+      background: #111;
+      border: 1px solid rgba(0,255,255,.1);
+      color: white;
+      padding: 15px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: .2s;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .menu button:hover {
+      background: #00e5ff;
+      color: black;
+    }
+
+    .content {
+      margin-left: 260px;
+      width: 100%;
+      padding: 30px;
+    }
+
+    .top {
+      margin-bottom: 25px;
+    }
+
+    .top h1 {
+      color: #00e5ff;
+      font-size: 40px;
+      font-weight: 900;
+    }
+
+    .top p {
+      color: #999;
+      margin-top: 5px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: #0d0d0d;
+      border: 1px solid rgba(0,255,255,.1);
+      border-radius: 20px;
+      padding: 22px;
+    }
+
+    .card span {
+      color: #888;
+      font-size: 14px;
+    }
+
+    .card h2 {
+      margin-top: 12px;
+      font-size: 34px;
+    }
+
+    .cyan {
+      color: #00e5ff;
+    }
+
+    .green {
+      color: #00ff88;
+    }
+
+    .red {
+      color: #ff4d4d;
+    }
+
+    .box {
+      background: #0d0d0d;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      border: 1px solid rgba(0,255,255,.1);
+    }
+
+    .box h2 {
+      margin-bottom: 20px;
+      color: #00e5ff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 15px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid #222;
+      background: #161616;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    button.primary {
+      background: #00e5ff;
+      color: black;
+      border: none;
+      width: 100%;
+      padding: 15px;
+      border-radius: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th {
+      text-align: left;
+      color: #00e5ff;
+      padding-bottom: 15px;
+    }
+
+    td {
+      padding: 14px 0;
+      border-bottom: 1px solid #1a1a1a;
+      color: #ddd;
+    }
+
+    .tag {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .testando {
+      background: rgba(255,165,0,.15);
+      color: orange;
+    }
+
+    .ativo {
+      background: rgba(0,255,136,.15);
+      color: #00ff88;
+    }
+
+    .cancelado {
+      background: rgba(255,0,0,.15);
+      color: #ff4d4d;
+    }
+
+    @media(max-width:900px){
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+      }
+
+      .content {
+        margin-left: 0;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <h1>PLAYHUB CONTROL</h1>
-  <div class="sub">Controle de clientes, testes, ativos, gastos, faturamento e lucro.</div>
 
-  <div class="grid">
-    <div class="card"><span>Clientes</span><strong id="totalClientes">0</strong></div>
-    <div class="card"><span>Ativos</span><strong id="ativos" class="cyan">0</strong></div>
-    <div class="card"><span>Faturado</span><strong id="faturado" class="green">R$ 0,00</strong></div>
-    <div class="card"><span>Lucro</span><strong id="lucro" class="green">R$ 0,00</strong></div>
-  </div>
+  <aside class="sidebar">
 
-  <div class="box">
-    <h2>Filtros</h2>
-    <div class="row">
-      <input type="date" id="dataInicio">
-      <input type="date" id="dataFim">
-      <select id="filtroStatus">
-        <option>Todos</option>
-        <option>Testando</option>
-        <option>Ativo</option>
-        <option>Vencido</option>
-        <option>Cancelado</option>
-        <option>Aguardando Pagamento</option>
-      </select>
-      <select id="filtroOrigem">
-        <option>Todos</option>
-        <option>Instagram</option>
-        <option>WhatsApp</option>
-        <option>Grupo</option>
-        <option>Indicação</option>
-        <option>Influenciador</option>
-        <option>Condomínio</option>
-        <option>Outro</option>
-      </select>
-    </div>
-    <button onclick="render()">Aplicar filtros</button>
-  </div>
+    <img class="logo" src="https://i.imgur.com/8lQK0yK.png" />
 
-  <br>
-
-  <div class="row">
-    <div class="box">
-      <h2>Novo Cliente / Lead</h2>
-      <input id="nome" placeholder="Nome do cliente">
-      <input id="telefone" placeholder="Telefone">
-      <select id="origem">
-        <option>Instagram</option><option>WhatsApp</option><option>Grupo</option><option>Indicação</option><option>Influenciador</option><option>Condomínio</option><option>Outro</option>
-      </select>
-      <select id="status">
-        <option>Testando</option><option>Ativo</option><option>Vencido</option><option>Cancelado</option><option>Aguardando Pagamento</option>
-      </select>
-      <input id="valor" type="number" step="0.01" placeholder="Valor recebido. Ex: 34.90">
-      <input id="custo" type="number" step="0.01" value="8" placeholder="Custo. Ex: 8">
-      <input id="data" type="date">
-      <textarea id="obs" placeholder="Observação"></textarea>
-      <button onclick="addCliente()">Salvar cliente</button>
+    <div class="menu">
+      <button>📊 Dashboard</button>
+      <button>👥 Clientes</button>
+      <button>🧪 Testes</button>
+      <button>💰 Financeiro</button>
+      <button>📈 Relatórios</button>
+      <button>⚙️ Configurações</button>
     </div>
 
-    <div class="box">
-      <h2>Novo Gasto</h2>
-      <input id="descGasto" placeholder="Descrição do gasto">
-      <input id="catGasto" placeholder="Categoria. Ex: Marketing">
-      <input id="valorGasto" type="number" step="0.01" placeholder="Valor">
-      <input id="dataGasto" type="date">
-      <button onclick="addGasto()">Salvar gasto</button>
-      <h3>Gastos filtrados</h3>
-      <div id="listaGastos"></div>
+  </aside>
+
+  <main class="content">
+
+    <div class="top">
+      <h1>PLAYHUB CONTROL</h1>
+      <p>Painel de gestão da operação</p>
     </div>
-  </div>
 
-  <br>
+    <div class="cards">
 
-  <div class="box table-wrap">
-    <h2>Acompanhamento de clientes</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Cliente</th><th>Telefone</th><th>Origem</th><th>Status</th><th>Valor</th><th>Custo</th><th>Lucro</th><th>Data</th><th>Observação</th><th>Ação</th>
-        </tr>
-      </thead>
-      <tbody id="clientesTabela"></tbody>
-    </table>
-  </div>
-
-<script>
-  let clientes = JSON.parse(localStorage.getItem("playhub_clientes") || "[]");
-  let gastos = JSON.parse(localStorage.getItem("playhub_gastos") || "[]");
-
-  document.getElementById("data").value = new Date().toISOString().slice(0,10);
-  document.getElementById("dataGasto").value = new Date().toISOString().slice(0,10);
-
-  function moeda(v) {
-    return Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  }
-
-  function salvar() {
-    localStorage.setItem("playhub_clientes", JSON.stringify(clientes));
-    localStorage.setItem("playhub_gastos", JSON.stringify(gastos));
-  }
-
-  function filtrados() {
-    const ini = document.getElementById("dataInicio").value;
-    const fim = document.getElementById("dataFim").value;
-    const st = document.getElementById("filtroStatus").value;
-    const or = document.getElementById("filtroOrigem").value;
-
-    const cf = clientes.filter(c =>
-      (!ini || c.data >= ini) &&
-      (!fim || c.data <= fim) &&
-      (st === "Todos" || c.status === st) &&
-      (or === "Todos" || c.origem === or)
-    );
-
-    const gf = gastos.filter(g =>
-      (!ini || g.data >= ini) &&
-      (!fim || g.data <= fim)
-    );
-
-    return { cf, gf };
-  }
-
-  function render() {
-    const { cf, gf } = filtrados();
-    const faturado = cf.reduce((s,c) => s + Number(c.valor || 0), 0);
-    const custoClientes = cf.reduce((s,c) => s + Number(c.custo || 0), 0);
-    const totalGastos = gf.reduce((s,g) => s + Number(g.valor || 0), 0);
-    const lucro = faturado - custoClientes - totalGastos;
-
-    document.getElementById("totalClientes").innerText = cf.length;
-    document.getElementById("ativos").innerText = cf.filter(c => c.status === "Ativo").length;
-    document.getElementById("faturado").innerText = moeda(faturado);
-    document.getElementById("lucro").innerText = moeda(lucro);
-    document.getElementById("lucro").className = lucro >= 0 ? "green" : "red";
-
-    document.getElementById("clientesTabela").innerHTML = cf.map(c => `
-      <tr>
-        <td>${c.nome}</td>
-        <td>${c.telefone || "-"}</td>
-        <td>${c.origem}</td>
-        <td>${c.status}</td>
-        <td>${moeda(c.valor)}</td>
-        <td>${moeda(c.custo)}</td>
-        <td class="${Number(c.valor)-Number(c.custo) >= 0 ? 'green' : 'red'}">${moeda(Number(c.valor)-Number(c.custo))}</td>
-        <td>${c.data}</td>
-        <td>${c.obs || ""}</td>
-        <td><button class="small-btn" onclick="delCliente(${c.id})">Excluir</button></td>
-      </tr>
-    `).join("");
-
-    document.getElementById("listaGastos").innerHTML = gf.map(g => `
-      <div style="background:#181818;padding:12px;border-radius:12px;margin-top:10px;">
-        ${g.data} - ${g.desc}<br><span class="red">${moeda(g.valor)}</span>
-        <button class="small-btn" onclick="delGasto(${g.id})">Excluir</button>
+      <div class="card">
+        <span>Clientes Totais</span>
+        <h2 id="clientesTotal">0</h2>
       </div>
-    `).join("");
-  }
 
-  function addCliente() {
-    const nome = document.getElementById("nome").value.trim();
-    if (!nome) return alert("Digite o nome do cliente");
+      <div class="card">
+        <span>Clientes Testando</span>
+        <h2 class="cyan" id="clientesTeste">0</h2>
+      </div>
 
-    clientes.unshift({
-      id: Date.now(),
-      nome,
-      telefone: document.getElementById("telefone").value,
-      origem: document.getElementById("origem").value,
-      status: document.getElementById("status").value,
-      valor: Number(document.getElementById("valor").value || 0),
-      custo: Number(document.getElementById("custo").value || 0),
-      data: document.getElementById("data").value,
-      obs: document.getElementById("obs").value
-    });
+      <div class="card">
+        <span>Faturamento</span>
+        <h2 class="green" id="faturamento">R$ 0</h2>
+      </div>
 
-    salvar();
-    document.getElementById("nome").value = "";
-    document.getElementById("telefone").value = "";
-    document.getElementById("valor").value = "";
-    document.getElementById("obs").value = "";
+      <div class="card">
+        <span>Lucro</span>
+        <h2 class="green" id="lucro">R$ 0</h2>
+      </div>
+
+    </div>
+
+    <div class="grid">
+
+      <div class="box">
+
+        <h2>Novo Cliente</h2>
+
+        <input id="nome" placeholder="Nome do cliente" />
+
+        <input id="telefone" placeholder="Telefone" />
+
+        <select id="status">
+          <option>Testando</option>
+          <option>Ativo</option>
+          <option>Cancelado</option>
+        </select>
+
+        <input id="valor" type="number" placeholder="Valor recebido" />
+
+        <input id="custo" type="number" placeholder="Custo do cliente" value="8" />
+
+        <textarea id="obs" placeholder="Observações"></textarea>
+
+        <button class="primary" onclick="addCliente()">
+          Salvar Cliente
+        </button>
+
+      </div>
+
+      <div class="box">
+
+        <h2>Novo Gasto</h2>
+
+        <input id="gastoNome" placeholder="Descrição" />
+
+        <input id="gastoValor" type="number" placeholder="Valor gasto" />
+
+        <button class="primary" onclick="addGasto()">
+          Salvar Gasto
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="box">
+
+      <h2>Clientes</h2>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Telefone</th>
+            <th>Status</th>
+            <th>Valor</th>
+            <th>Lucro</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+
+        <tbody id="clientesTabela"></tbody>
+
+      </table>
+
+    </div>
+
+  </main>
+
+  <script>
+
+    let clientes = JSON.parse(localStorage.getItem('clientes')) || [];
+
+    let gastos = JSON.parse(localStorage.getItem('gastos')) || [];
+
+    function salvar(){
+      localStorage.setItem('clientes', JSON.stringify(clientes));
+      localStorage.setItem('gastos', JSON.stringify(gastos));
+    }
+
+    function moeda(valor){
+      return valor.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+    }
+
+    function render(){
+
+      document.getElementById('clientesTotal').innerText = clientes.length;
+
+      document.getElementById('clientesTeste').innerText = clientes.filter(c => c.status === 'Testando').length;
+
+      let faturamento = clientes.reduce((acc,c)=>acc + Number(c.valor || 0),0);
+
+      let custo = clientes.reduce((acc,c)=>acc + Number(c.custo || 0),0);
+
+      let despesa = gastos.reduce((acc,g)=>acc + Number(g.valor || 0),0);
+
+      let lucro = faturamento - custo - despesa;
+
+      document.getElementById('faturamento').innerText = moeda(faturamento);
+
+      document.getElementById('lucro').innerText = moeda(lucro);
+
+      document.getElementById('clientesTabela').innerHTML = clientes.map(cliente => {
+
+        let classe = cliente.status === 'Ativo'
+          ? 'ativo'
+          : cliente.status === 'Cancelado'
+          ? 'cancelado'
+          : 'testando';
+
+        return `
+          <tr>
+            <td>${cliente.nome}</td>
+            <td>${cliente.telefone}</td>
+            <td>
+              <span class="tag ${classe}">
+                ${cliente.status}
+              </span>
+            </td>
+            <td>${moeda(Number(cliente.valor || 0))}</td>
+            <td class="green">
+              ${moeda(Number(cliente.valor || 0) - Number(cliente.custo || 0))}
+            </td>
+            <td>${cliente.obs}</td>
+          </tr>
+        `;
+
+      }).join('');
+
+    }
+
+    function addCliente(){
+
+      let nome = document.getElementById('nome').value;
+
+      if(!nome){
+        alert('Digite o nome');
+        return;
+      }
+
+      clientes.unshift({
+        nome,
+        telefone: document.getElementById('telefone').value,
+        status: document.getElementById('status').value,
+        valor: document.getElementById('valor').value,
+        custo: document.getElementById('custo').value,
+        obs: document.getElementById('obs').value
+      });
+
+      salvar();
+      render();
+
+      document.getElementById('nome').value = '';
+      document.getElementById('telefone').value = '';
+      document.getElementById('valor').value = '';
+      document.getElementById('obs').value = '';
+
+    }
+
+    function addGasto(){
+
+      gastos.unshift({
+        nome: document.getElementById('gastoNome').value,
+        valor: document.getElementById('gastoValor').value
+      });
+
+      salvar();
+      render();
+
+      document.getElementById('gastoNome').value = '';
+      document.getElementById('gastoValor').value = '';
+
+    }
+
     render();
-  }
 
-  function addGasto() {
-    const desc = document.getElementById("descGasto").value.trim();
-    if (!desc) return alert("Digite a descrição do gasto");
+  </script>
 
-    gastos.unshift({
-      id: Date.now(),
-      desc,
-      cat: document.getElementById("catGasto").value,
-      valor: Number(document.getElementById("valorGasto").value || 0),
-      data: document.getElementById("dataGasto").value
-    });
-
-    salvar();
-    document.getElementById("descGasto").value = "";
-    document.getElementById("catGasto").value = "";
-    document.getElementById("valorGasto").value = "";
-    render();
-  }
-
-  function delCliente(id) {
-    clientes = clientes.filter(c => c.id !== id);
-    salvar();
-    render();
-  }
-
-  function delGasto(id) {
-    gastos = gastos.filter(g => g.id !== id);
-    salvar();
-    render();
-  }
-
-  render();
-</script>
 </body>
 </html>
+```
+
+# IMPORTANTE
+
+No trecho:
+
+```html
+<img class="logo" src="https://i.imgur.com/8lQK0yK.png" />
+```
+
+você pode trocar depois pela URL da sua logo.
+
+# COMO PUBLICAR
+
+1. Abra o `index.html`
+2. Apague tudo
+3. Cole o código acima
+4. Commit changes
+5. Aguarde 1 minuto
+6. Abra o GitHub Pages novamente
